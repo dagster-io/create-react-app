@@ -254,6 +254,62 @@ module.exports = function (
     }
   }
 
+  // @dagster-io START
+  fs.writeFileSync(
+    path.join(appPath, '.dagster.js'),
+    `/**
+ * Configuration for custom @dagster-io/react-scripts behavior. All paths must be absolute,
+ * e.g. using path.resolve().
+ */
+
+module.exports = {
+  /**
+  * Proxy origin, probably defined via env var, e.g. \`process.env.REACT_APP_BACKEND_ORIGIN\`.
+  */
+  proxyOrigin: '',
+
+  /**
+  * Modules that must be deduped for the build, e.g. \`react\`. Ex:
+  *
+  * {
+  *   react: path.resolve(pathToLocalDagit, 'node_modules/react'),
+  * }
+  */
+  moduleAliases: {},
+
+  /**
+  * \`src\` paths that must be babelified, e.g. linked packages that are also
+  * development targets, but are outside of the CRA's own \`src\` directory. Ex:
+  *
+  * [
+  *   path.resolve(pathToLocalDagit, 'packages/core/src'),
+  * ]
+  */
+  srcPaths: [],
+
+  /**
+  * CSP Configuration. Receives the webpack environment to return the appropriate CSP
+  * values based on prod/dev/etc. Values are supplied to \`CspHtmlWebpackPlugin\`.
+  */
+  csp: (webpackEnv) => {
+    const isEnvDevelopment = webpackEnv === 'development';
+    return {
+      policy: {},
+      options: {},
+    };
+  },
+
+  /**
+   * Jest module name mappings. Similar to the Webpack aliases above, this is used to
+   * dedupe shared modules.
+   */
+  jestAliases: {},
+};
+`,
+    'utf8'
+  );
+  // @dagster-io END
+
   const gitignoreExists = fs.existsSync(path.join(appPath, '.gitignore'));
   if (gitignoreExists) {
     // Append if there's already a `.gitignore` file there

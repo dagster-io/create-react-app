@@ -78,6 +78,9 @@ module.exports = {
   appTsBuildInfoFile: resolveApp('node_modules/.cache/tsconfig.tsbuildinfo'),
   swSrc: resolveModule(resolveApp, 'src/service-worker'),
   publicUrlOrPath,
+
+  // @dagster-io:
+  dagsterConfig: resolveApp('.dagster.js'),
 };
 
 // @remove-on-eject-begin
@@ -108,6 +111,9 @@ module.exports = {
   ownNodeModules: resolveOwn('node_modules'), // This is empty on npm 3
   appTypeDeclarations: resolveApp('src/react-app-env.d.ts'),
   ownTypeDeclarations: resolveOwn('lib/react-app.d.ts'),
+
+  // @dagster-io:
+  dagsterConfig: resolveApp('.dagster.js'),
 };
 
 const ownPackageJson = require('../package.json');
@@ -146,6 +152,9 @@ if (
     ownNodeModules: resolveOwn('node_modules'),
     appTypeDeclarations: resolveOwn(`${templatePath}/src/react-app-env.d.ts`),
     ownTypeDeclarations: resolveOwn('lib/react-app.d.ts'),
+
+    // @dagster-io:
+    dagsterConfig: resolveOwn(`${templatePath}/.dagster.js`),
   };
 }
 // @remove-on-eject-end
