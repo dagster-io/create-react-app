@@ -328,8 +328,8 @@ module.exports = function (webpackEnv) {
       },
       plugins: [
         /**
-         * @dagster-io: Disabled because it prevents working with linked packages, which
-         * we use for
+         * @dagster-io: Disabled because it prevents importing linked packages and workspace
+         * packages.
          */
         // Prevents users from importing files from outside of src/ (or node_modules/).
         // This often causes confusion because we only process files within src/ with babel.
