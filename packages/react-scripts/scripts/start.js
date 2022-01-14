@@ -107,8 +107,12 @@ checkBrowsers(paths.appPath, isInteractive)
       useTypeScript,
       webpack,
     });
+
+    // @dagster-io:
+    const dagsterProxy = require(paths.dagsterConfig).proxyOrigin;
+
     // Load proxy config
-    const proxySetting = require(paths.appPackageJson).proxy;
+    const proxySetting = dagsterProxy || require(paths.appPackageJson).proxy;
     const proxyConfig = prepareProxy(
       proxySetting,
       paths.appPublic,

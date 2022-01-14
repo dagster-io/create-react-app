@@ -13,6 +13,10 @@ const paths = require('../../config/paths');
 const modules = require('../../config/modules');
 
 module.exports = (resolve, rootDir, isEjecting) => {
+  // @dagster-io START
+  const dagsterConfig = require(paths.dagsterConfig);
+  // @dagster-io END
+
   // Use this instead of `paths.testsSetup` to avoid putting
   // an absolute filename into configuration after ejecting.
   const setupTestsMatches = paths.testsSetup.match(/src[/\\]setupTests\.(.+)/);
@@ -57,6 +61,9 @@ module.exports = (resolve, rootDir, isEjecting) => {
       '^react-native$': 'react-native-web',
       '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
       ...(modules.jestAliases || {}),
+      // @dagster-io START
+      ...(dagsterConfig.jestAliases || {}),
+      // @dagster-io END
     },
     moduleFileExtensions: [...paths.moduleFileExtensions, 'node'].filter(
       ext => !ext.includes('mjs')
