@@ -296,7 +296,6 @@ module.exports = {
   * values based on prod/dev/etc. Values are supplied to \`CspHtmlWebpackPlugin\`.
   */
   csp: (webpackEnv) => {
-    const isEnvDevelopment = webpackEnv === 'development';
     return {
       policy: {},
       options: {},
