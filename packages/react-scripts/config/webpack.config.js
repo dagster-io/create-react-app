@@ -24,6 +24,7 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const {RawSource} = require('webpack-sources');
 const paths = require('./paths');
 const modules = require('./modules');
 const getClientEnvironment = require('./env');
@@ -99,6 +100,12 @@ module.exports = function (webpackEnv) {
 
   // @dagster-io START
   const cspConfig = dagsterConfig ? dagsterConfig.csp(webpackEnv) : null;
+  const {policy: cspPolicy, options: cspOptions, outputFilename} = cspConfig || {};
+  if (outputFilename && isEnvProduction) {
+    cspOptions.processFn = (builtPolicy, _htmlPluginData, _obj, compilation) => {
+      compilation.emitAsset(outputFilename, new RawSource(builtPolicy));
+    };
+  }
   // @dagster-io END
 
   // Variable used for enabling profiling in Production
@@ -643,8 +650,10 @@ module.exports = function (webpackEnv) {
         )
       ),
 
-      // @dagster-io: CSP configuration from .dagster.js
-      cspConfig && new CspHtmlWebpackPlugin(cspConfig.policy, cspConfig.options),
+      // @dagster-io START
+      // Set CSP configuration from .dagster.js
+      cspPolicy && new CspHtmlWebpackPlugin(cspPolicy, cspOptions),
+      // @dagster-io END
 
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.

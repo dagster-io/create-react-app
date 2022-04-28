@@ -268,37 +268,41 @@ module.exports = function (
 
 module.exports = {
   /**
-  * Proxy origin, probably defined via env var, e.g. \`process.env.REACT_APP_BACKEND_ORIGIN\`.
-  */
+   * Proxy origin, probably defined via env var, e.g. \`process.env.REACT_APP_BACKEND_ORIGIN\`.
+   */
   proxyOrigin: '',
 
   /**
-  * Modules that must be deduped for the Webpack build, e.g. \`react\`. Ex:
-  *
-  * {
-  *   react: path.resolve(pathToLocalDagit, 'node_modules/react'),
-  * }
-  */
+   * Modules that must be deduped for the Webpack build, e.g. \`react\`. Ex:
+   *
+   * {
+   *   react: path.resolve(pathToLocalDagit, 'node_modules/react'),
+   * }
+   */
   moduleAliases: {},
 
   /**
-  * \`src\` paths that must be babelified by Webpack, e.g. linked packages that are also
-  * development targets, but are outside of the CRA's own \`src\` directory. Ex:
-  *
-  * [
-  *   path.resolve(pathToLocalDagit, 'packages/core/src'),
-  * ]
-  */
+   * \`src\` paths that must be babelified by Webpack, e.g. linked packages that are also
+   * development targets, but are outside of the CRA's own \`src\` directory. Ex:
+   *
+   * [
+   *   path.resolve(pathToLocalDagit, 'packages/core/src'),
+   * ]
+   */
   srcPaths: [],
 
   /**
-  * CSP Configuration. Receives the webpack environment to return the appropriate CSP
-  * values based on prod/dev/etc. Values are supplied to \`CspHtmlWebpackPlugin\`.
-  */
+   * CSP Configuration. Receives the webpack environment to return the appropriate CSP
+   * values based on prod/dev/etc. Values are supplied to \`CspHtmlWebpackPlugin\`.
+   *
+   * Optionally include an \`outputFilename\` to produce a built file with the CSP contents
+   * in the production build that can be used as a Content-Security-Policy header value.
+   */
   csp: (webpackEnv) => {
     return {
-      policy: {},
-      options: {},
+      // policy: {},
+      // options: {},
+      // outputFilename: '',
     };
   },
 
