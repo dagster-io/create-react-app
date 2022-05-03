@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import logo from './logo.svg';
 import './App.css';
 
@@ -22,4 +24,5 @@ function App() {
   );
 }
 
+// eslint-disable-next-line import/no-default-export
 export default App;

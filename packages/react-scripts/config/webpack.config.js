@@ -83,7 +83,12 @@ const hasJsxRuntime = (() => {
 })();
 
 // @dagster-io START
-const dagsterConfig = require(paths.dagsterConfig);
+let dagsterConfig;
+try {
+  dagsterConfig = require(paths.dagsterConfig);
+} catch (e) {
+  console.log('⚠️  WARNING: No .dagster.js file found. Continuing without Dagster-specific config.');
+}
 // @dagster-io END
 
 // This is the production and development configuration.
@@ -93,7 +98,7 @@ module.exports = function (webpackEnv) {
   const isEnvProduction = webpackEnv === 'production';
 
   // @dagster-io START
-  const cspConfig = dagsterConfig.csp(webpackEnv);
+  const cspConfig = dagsterConfig ? dagsterConfig.csp(webpackEnv) : null;
   // @dagster-io END
 
   // Variable used for enabling profiling in Production
@@ -325,7 +330,7 @@ module.exports = function (webpackEnv) {
         }),
         ...(modules.webpackAliases || {}),
         // @dagster-io START
-        ...(dagsterConfig.moduleAliases || {}),
+        ...(dagsterConfig ? (dagsterConfig.moduleAliases || {}) : {}),
         // @dagster-io END
       },
       plugins: [
@@ -421,7 +426,7 @@ module.exports = function (webpackEnv) {
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               // @dagster-io START
-              include: [paths.appSrc, ...dagsterConfig.srcPaths],
+              include: [paths.appSrc, ...(dagsterConfig ? (dagsterConfig.srcPaths || []) : [])],
               // @dagster-io END
               loader: require.resolve('babel-loader'),
               options: {
@@ -639,7 +644,7 @@ module.exports = function (webpackEnv) {
       ),
 
       // @dagster-io: CSP configuration from .dagster.js
-      new CspHtmlWebpackPlugin(cspConfig.policy, cspConfig.options),
+      cspConfig && new CspHtmlWebpackPlugin(cspConfig.policy, cspConfig.options),
 
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
