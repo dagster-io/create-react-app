@@ -1,6 +1,6 @@
 {
   "name": "@dagster-io/react-scripts",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "Dagster customization of configuration and scripts for Create React App.",
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
     "@babel/core": "^7.16.0",
     "@dagster-io/eslint-config": "^1.0.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
-    "@svgr/webpack": "^5.5.0",
+    "@svgr/webpack": "^6.2.1",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",
     "babel-plugin-named-asset-import": "^0.3.8",
@@ -76,6 +76,7 @@
     "webpack": "^5.64.4",
     "webpack-dev-server": "^4.6.0",
     "webpack-manifest-plugin": "^4.0.2",
+    "webpack-sources": "^3.2.3",
     "workbox-webpack-plugin": "^6.4.1"
   },
   "devDependencies": {
