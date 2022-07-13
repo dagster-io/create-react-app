@@ -102,8 +102,10 @@ class NoncePlaceholder {
         (data, cb) => {
           const { headTags } = data;
           if (dagsterConfig.noncePlaceholder) {
-            headTags.forEach(x => {
-              x.attributes.nonce = dagsterConfig.noncePlaceholder;
+            headTags.forEach(tag => {
+              if (tag.tagName === 'script') {
+                tag.attributes.nonce = dagsterConfig.noncePlaceholder;
+              }
             });
           }
           cb(null, data);
