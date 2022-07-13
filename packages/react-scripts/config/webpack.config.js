@@ -24,7 +24,7 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const ESLintPlugin = require('eslint-webpack-plugin');
-const {RawSource} = require('webpack-sources');
+const { RawSource } = require('webpack-sources');
 const paths = require('./paths');
 const modules = require('./modules');
 const getClientEnvironment = require('./env');
@@ -88,7 +88,31 @@ let dagsterConfig;
 try {
   dagsterConfig = require(paths.dagsterConfig);
 } catch (e) {
-  console.log('⚠️  WARNING: No .dagster.js file found. Continuing without Dagster-specific config.');
+  console.log(
+    '⚠️  WARNING: No .dagster.js file found. Continuing without Dagster-specific config.'
+  );
+}
+
+// https://towardsdatascience.com/content-security-policy-how-to-create-an-iron-clad-nonce-based-csp3-policy-with-webpack-and-nginx-ce5a4605db90
+class NoncePlaceholder {
+  apply(compiler) {
+    compiler.hooks.thisCompilation.tap('NoncePlaceholder', compilation => {
+      HtmlWebpackPlugin.getHooks(compilation).afterTemplateExecution.tapAsync(
+        'NoncePlaceholder',
+        (data, cb) => {
+          const { headTags } = data;
+          if (dagsterConfig.noncePlaceholder) {
+            headTags.forEach(tag => {
+              if (tag.tagName === 'script') {
+                tag.attributes.nonce = dagsterConfig.noncePlaceholder;
+              }
+            });
+          }
+          cb(null, data);
+        }
+      );
+    });
+  }
 }
 // @dagster-io END
 
@@ -100,9 +124,18 @@ module.exports = function (webpackEnv) {
 
   // @dagster-io START
   const cspConfig = dagsterConfig ? dagsterConfig.csp(webpackEnv) : null;
-  const {policy: cspPolicy, options: cspOptions, outputFilename} = cspConfig || {};
+  const {
+    policy: cspPolicy,
+    options: cspOptions,
+    outputFilename,
+  } = cspConfig || {};
   if (outputFilename && isEnvProduction) {
-    cspOptions.processFn = (builtPolicy, _htmlPluginData, _obj, compilation) => {
+    cspOptions.processFn = (
+      builtPolicy,
+      _htmlPluginData,
+      _obj,
+      compilation
+    ) => {
       compilation.emitAsset(outputFilename, new RawSource(builtPolicy));
     };
   }
@@ -337,7 +370,7 @@ module.exports = function (webpackEnv) {
         }),
         ...(modules.webpackAliases || {}),
         // @dagster-io START
-        ...(dagsterConfig ? (dagsterConfig.moduleAliases || {}) : {}),
+        ...(dagsterConfig ? dagsterConfig.moduleAliases || {} : {}),
         // @dagster-io END
       },
       plugins: [
@@ -433,7 +466,10 @@ module.exports = function (webpackEnv) {
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               // @dagster-io START
-              include: [paths.appSrc, ...(dagsterConfig ? (dagsterConfig.srcPaths || []) : [])],
+              include: [
+                paths.appSrc,
+                ...(dagsterConfig ? dagsterConfig.srcPaths || [] : []),
+              ],
               // @dagster-io END
               loader: require.resolve('babel-loader'),
               options: {
@@ -652,7 +688,12 @@ module.exports = function (webpackEnv) {
 
       // @dagster-io START
       // Set CSP configuration from .dagster.js
-      cspPolicy && new CspHtmlWebpackPlugin(cspPolicy, cspOptions),
+      ...(cspPolicy
+        ? [
+            new CspHtmlWebpackPlugin(cspPolicy, cspOptions),
+            new NoncePlaceholder(),
+          ]
+        : []),
       // @dagster-io END
 
       // Inlines the webpack runtime script. This script is too small to warrant

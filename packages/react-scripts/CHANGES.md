@@ -1,3 +1,7 @@
+### 5.0.4 (July 12, 2022)
+
+- Insert nonce placeholder on generated head tags
+
 ### 5.0.3 (May 3, 2022)
 
 - Merge upstream changes, including v5.0.1

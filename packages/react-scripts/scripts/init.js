@@ -273,6 +273,11 @@ module.exports = {
   proxyOrigin: '',
 
   /**
+   * CSP nonce placeholder.
+   */
+  noncePlaceholder: '',
+
+  /**
    * Modules that must be deduped for the Webpack build, e.g. \`react\`. Ex:
    *
    * {
