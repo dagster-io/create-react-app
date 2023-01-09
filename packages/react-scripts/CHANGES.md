@@ -1,3 +1,7 @@
+### 5.0.5 (January 9, 2023)
+
+- Add `@graphql-codegen/client-preset` Babel plugin
+
 ### 5.0.4 (July 12, 2022)
 
 - Insert nonce placeholder on generated head tags
