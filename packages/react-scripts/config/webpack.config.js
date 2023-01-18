@@ -139,22 +139,6 @@ module.exports = function (webpackEnv) {
       compilation.emitAsset(outputFilename, new RawSource(builtPolicy));
     };
   }
-
-  // Configure `@graphql-codegen/client-preset` plugin to point at codegen artifacts.
-  let artifactDirectory = null;
-  let gqlTagName = null;
-  const graphQLConfig = dagsterConfig ? dagsterConfig.graphQL : null;
-  if (graphQLConfig) {
-    const targetDirectory = graphQLConfig.artifactDirectory;
-    if (!targetDirectory || !fs.existsSync(targetDirectory)) {
-      console.log(
-        '⚠️  WARNING: `artifactDirectory` in GraphQL config does not exist. Continuing without GraphQL codegen plugin.'
-      );
-    } else {
-      artifactDirectory = targetDirectory;
-      gqlTagName = graphQLConfig.gqlTagName || 'graphql';
-    }
-  }
   // @dagster-io END
 
   // Variable used for enabling profiling in Production
@@ -524,18 +508,6 @@ module.exports = function (webpackEnv) {
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
                     require.resolve('react-refresh/babel'),
-                  /**
-                   * @dagster-io START
-                   * Apply the GraphQL plugin to ensure that query documents are not
-                   * duplicated between implementation and codegen.
-                   */
-                  artifactDirectory && [
-                    require('@graphql-codegen/client-preset').babelOptimizerPlugin,
-                    {artifactDirectory, gqlTagName},
-                  ],
-                  /**
-                   * @dagster-io END
-                   */
                 ].filter(Boolean),
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/

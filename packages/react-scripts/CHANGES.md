@@ -1,3 +1,7 @@
+### 5.0.6 (January 17, 2023)
+
+- Revert 5.0.5 changes, since we backed out the client-preset behavior in our repos
+
 ### 5.0.5 (January 9, 2023)
 
 - Add `@graphql-codegen/client-preset` Babel plugin
